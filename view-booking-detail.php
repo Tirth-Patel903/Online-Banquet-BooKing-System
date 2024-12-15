@@ -2,77 +2,79 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['obbsuid']==0)) {
+if (strlen($_SESSION['odmsaid']==0)) {
   header('location:logout.php');
   } else{
-   
+    if(isset($_POST['submit']))
+  {
+
+
+$eid=$_GET['editid'];
+    $bookingid=$_GET['bookingid'];
+    $status=$_POST['status'];
+   $remark=$_POST['remark'];
+  
+
+$sql= "update tblbooking set Status=:status,Remark=:remark where ID=:eid";
+$query=$dbh->prepare($sql);
+$query->bindParam(':status',$status,PDO::PARAM_STR);
+$query->bindParam(':remark',$remark,PDO::PARAM_STR);
+$query->bindParam(':eid',$eid,PDO::PARAM_STR);
+
+ $query->execute();
+
+  echo '<script>alert("Remark has been updated")</script>';
+ echo "<script>window.location.href ='all-booking.php'</script>";
+}
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>Online Banquet Booking System|| View Booking </title>
+<!doctype html>
+ <html lang="en" class="no-focus"> <!--<![endif]-->
+    <head>
+ <title>Online Banquet Booking System - View Booking</title>
+<link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
 
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!-- bootstrap-css -->
-<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<!--// bootstrap-css -->
-<!-- css -->
-<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
-<!--// css -->
-<!-- font-awesome icons -->
-<link href="css/font-awesome.css" rel="stylesheet"> 
-<!-- //font-awesome icons -->
-<!-- font -->
-<link href="//fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
-<link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700italic,700,400italic,300italic,300' rel='stylesheet' type='text/css'>
-<!-- //font -->
-<script src="js/jquery-1.11.1.min.js"></script>
-<script src="js/bootstrap.js"></script>
-<script type="text/javascript">
-	jQuery(document).ready(function($) {
-		$(".scroll").click(function(event){		
-			event.preventDefault();
-			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
-		});
-	});
-</script> 
-<!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<![endif]-->
 </head>
-<body>
-	<!-- banner -->
-	<div class="banner jarallax">
-		<div class="agileinfo-dot">
-		<?php include_once('includes/header.php');?>
-			<div class="wthree-heading">
-				<h2>View Booking</h2>
-			</div>
-		</div>
-	</div>
-	<!-- //banner -->
-	<!-- about -->
-	<!-- about-top -->
-	<div class="about-top">
-		<div class="container">
-			<div class="wthree-services-bottom-grids">
-				
-				<p class="wow fadeInUp animated" data-wow-delay=".5s">View Your Booking Details.</p>
-					<div class="bs-docs-example wow fadeInUp animated" data-wow-delay=".5s">
-						 <?php
-                  $uid=$_SESSION['obbsuid'];
-                  $bookingid=$_GET['bookingid'];
+    <body>
+        <div id="page-container" class="sidebar-o sidebar-inverse side-scroll page-header-fixed main-content-narrow">
+     
 
-$sql="SELECT tbluser.FullName,tbluser.MobileNumber,tbluser.Email,tblbooking.BookingID,tblbooking.BookingDate,tblbooking.BookingFrom,tblbooking.BookingTo,tblbooking.EventType,tblbooking.Numberofguest,tblbooking.Message, tblbooking.Remark,tblbooking.Status,tblbooking.UpdationDate,tblservice.ServiceName,tblservice.SerDes,tblservice.ServicePrice,Remark,states.state_title,cityName
- from tblbooking join tblservice on tblbooking.ServiceID=tblservice.ID 
+             <?php include_once('includes/sidebar.php');?>
+
+          <?php include_once('includes/header.php');?>
+
+            <!-- Main Container -->
+            <main id="main-container">
+                <!-- Page Content -->
+                <div class="content">
+                
+                    <!-- Register Forms -->
+                    <h2 class="content-heading">View Booking</h2>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- Bootstrap Register -->
+                            <div class="block block-themed">
+                                <div class="block-header bg-gd-emerald">
+                                    <h3 class="block-title">View Booking</h3>
+                                    <div class="block-options">
+                                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+                                            <i class="si si-refresh"></i>
+                                        </button>
+                                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
+                                    </div>
+                                </div>
+                                <div class="block-content">
+                                   
+                                    <?php
+                  $eid=$_GET['editid'];
+
+$sql="SELECT tbluser.FullName,tbluser.MobileNumber,tbluser.Email,tblbooking.BookingID,tblbooking.BookingDate,tblbooking.BookingFrom,tblbooking.BookingTo,tblbooking.EventType,tblbooking.Numberofguest,tblbooking.Message, tblbooking.Remark,tblbooking.Status,tblbooking.UpdationDate,tblservice.ServiceName,tblservice.SerDes,tblservice.ServicePrice,states.state_title,cityName from tblbooking 
+join tblservice on tblbooking.ServiceID=tblservice.ID 
 join tbluser on tbluser.ID=tblbooking.UserID 
 left join states on states.id=tblbooking.stateId 
-
-where tblbooking.UserID=:uid and tblbooking.BookingID=:bookingid";
+ where tblbooking.ID=:eid";
 $query = $dbh -> prepare($sql);
-$query-> bindParam(':uid', $uid, PDO::PARAM_STR);
-$query-> bindParam(':bookingid', $bookingid, PDO::PARAM_STR);
+$query-> bindParam(':eid', $eid, PDO::PARAM_STR);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 
@@ -110,13 +112,12 @@ foreach($results as $row)
     <td><?php  echo $row->Numberofguest;?></td>
   </tr>
 
-   <tr>
+     <tr>
    <th>State</th>
     <td><?php  echo $row->state_title;?></td>
     <th>City</th>
     <td><?php  echo $row->cityName;?></td>
   </tr>
-
  
   <tr>
     
@@ -143,26 +144,19 @@ foreach($results as $row)
     
      <th>Order Final Status</th>
 
-    <td> <?php  $status=$row->Status;
-    
-if($row->Status=="Approved")
-{
-  echo "Approved";
-}
+               <?php $fstatus=$row->Status; ?>
 
-if($row->Status=="Cancelled")
-{
- echo "Cancelled";
-}
+                     <td class="font-w600"> <?php if($fstatus==''):?>
+                          <span class="badge badge-warning">No Processed yet</span>
+                      <?php elseif($fstatus=='Approved'):?>
+                         <span class="badge badge-success"><?php echo $fstatus;?></span>
+                          <?php elseif($fstatus=='Cancelled'):?>
+                            <span class="badge badge-danger"><?php echo $fstatus;?></span>
+                        <?php endif;?>
 
 
-if($row->Status=="")
-{
-  echo "Not Response Yet";
-}
+                     </td>
 
-
-     ;?></td>
      <th >Admin Remark</th>
     <?php if($row->Status==""){ ?>
 
@@ -176,49 +170,81 @@ if($row->Status=="")
 <?php $cnt=$cnt+1;}} ?>
 
 </table> 
-					</div>
-				<div class="clearfix"> </div>
-			</div>
-		</div>
-	</div>
-	<!-- //about-top -->
-	
-	<!-- //about -->
-	<!-- footer -->
-	<?php include_once('includes/footer.php');?>
-	<!-- jarallax -->
-	<script src="js/jarallax.js"></script>
-	<script src="js/SmoothScroll.min.js"></script>
-	<script type="text/javascript">
-		/* init Jarallax */
-		$('.jarallax').jarallax({
-			speed: 0.5,
-			imgWidth: 1366,
-			imgHeight: 768
-		})
-	</script>
-	<!-- //jarallax -->
-	<script src="js/SmoothScroll.min.js"></script>
-	<script type="text/javascript" src="js/move-top.js"></script>
-	<script type="text/javascript" src="js/easing.js"></script>
-	<!-- here stars scrolling icon -->
-	<script type="text/javascript">
-		$(document).ready(function() {
-			/*
-				var defaults = {
-				containerID: 'toTop', // fading element id
-				containerHoverID: 'toTopHover', // fading element hover id
-				scrollSpeed: 1200,
-				easingType: 'linear' 
-				};
-			*/
-								
-			$().UItoTop({ easingType: 'easeOutQuart' });
-								
-			});
-	</script>
-<!-- //here ends scrolling icon -->
-<script src="js/modernizr.custom.js"></script>
+<?php 
 
-</body>	
-</html><?php }  ?>
+if ($fstatus==""){
+?> 
+<p align="center"  style="padding-top: 20px">                            
+ <button class="btn btn-primary waves-effect waves-light w-lg" data-toggle="modal" data-target="#myModal">Take Action</button></p>  
+
+<?php } ?>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Take Action</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                <table class="table table-bordered table-hover data-tables">
+
+                                <form method="post" name="submit">
+
+                                
+                               
+     <tr>
+    <th>Remark :</th>
+    <td>
+    <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
+  </tr> 
+   
+ 
+  <tr>
+    <th>Status :</th>
+    <td>
+
+   <select name="status" class="form-control wd-450" required="true" >
+     <option value="Approved" selected="true">Approved</option>
+     <option value="Cancelled">Cancelled</option>
+   </select></td>
+  </tr>
+</table>
+</div>
+<div class="modal-footer">
+ <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+ <button type="submit" name="submit" class="btn btn-primary">Update</button>
+  
+  </form>
+
+
+
+                                </div>
+                            </div>
+                            <!-- END Bootstrap Register -->
+                        </div>
+                        
+                       </div>
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+
+          <?php include_once('includes/footer.php');?>
+        </div>
+        <!-- END Page Container -->
+
+        <!-- Codebase Core JS -->
+        <script src="assets/js/core/jquery.min.js"></script>
+        <script src="assets/js/core/popper.min.js"></script>
+        <script src="assets/js/core/bootstrap.min.js"></script>
+        <script src="assets/js/core/jquery.slimscroll.min.js"></script>
+        <script src="assets/js/core/jquery.scrollLock.min.js"></script>
+        <script src="assets/js/core/jquery.appear.min.js"></script>
+        <script src="assets/js/core/jquery.countTo.min.js"></script>
+        <script src="assets/js/core/js.cookie.min.js"></script>
+        <script src="assets/js/codebase.js"></script>
+    </body>
+</html>
+<?php }  ?>
